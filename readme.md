@@ -14,7 +14,8 @@ _this project is currently under development._
 
 ---
 
-### Dataset : https://www.kaggle.com/datasets/sriharshaeedala/financial-fraud-detection-dataset
+### Dataset : 
+source : https://www.kaggle.com/datasets/sriharshaeedala/financial-fraud-detection-dataset
 
 ---
 
@@ -28,7 +29,7 @@ _this project is currently under development._
 
 ### Flowchart
 
-[asstes/](flowchart.png)!
+![Flowchart](assets/flowchart.png) 
 
 ---
 
