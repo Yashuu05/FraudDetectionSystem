@@ -40,17 +40,18 @@ source : https://www.kaggle.com/datasets/sriharshaeedala/financial-fraud-detecti
 ### Tech stack: 
 
 ```
-
-| Library/module | Description      |
-|-------         |----------        |
-| Python (3.10)  | primary language | 
-| flask          | backend server   | 
-| HTML           | structure        |
-| CSS            | Styling          |
-| joblib         | Save model weights|
-| Seaborn and matplotlib | Vsiualization |
-| Pandas         |  data cleaning   |
-| XGBoost        |  XGboost model   |
+-------------------------------------------------
+| Library/module         |     Description       |
+|------------------------|-----------------------|
+| Python (3.10)          | primary language      | 
+| flask                  | backend server        | 
+| HTML                   | structure             |
+| CSS                    | Styling               |
+| joblib                 | Save model weights    |
+| Seaborn and matplotlib | Vsiualization         |
+| Pandas                 |  data cleaning        |
+| XGBoost                |  XGboost model        |
+-------------------------------------------------
 
 ```
 ---
