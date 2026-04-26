@@ -96,14 +96,3 @@ def generate_data():
     }
 
     return data_input, data
-
-
-if __name__ == "__main__":
-
-    print("generating data...")
-    time.sleep(3)
-    data_input, data = generate_data()
-    
-    # print data
-    for key,val in data.items():
-        print(f"{key} : {val}")

@@ -83,7 +83,7 @@
   <link href="{{ url_for('static', filename='system1.css') }}" rel="stylesheet" />
 </head>
 
-<body class="bg-background text-on-background min-h-screen flex overflow-hidden">
+<body class="bg-background text-on-background h-screen flex overflow-hidden">
   <!-- SideNavBar (Shared Component) -->
   <aside
     class="flex flex-col w-64 h-screen pt-4 bg-[#0c0c0f] font-geist text-sm docked left-0 border-r border-zinc-800 shrink-0">
@@ -132,7 +132,7 @@
       </div>
     </div>
   </aside>
-  <div class="flex-1 flex flex-col min-w-0">
+  <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
     <!-- TopNavBar (Shared Component) -->
     <header
       class="flex justify-between items-center w-full px-6 h-16 bg-[#09090b] text-violet-400 font-geist tracking-tight docked full-width top-0 border-b border-zinc-800 shrink-0">
@@ -148,12 +148,12 @@
       </div>
       <div class="flex items-center gap-4">
         <div class="flex items-center gap-2 mr-4">
-          <button
+          <button id="start-btn"
             class="flex items-center gap-2 px-4 py-1.5 rounded bg-primary text-on-primary font-bold text-xs active:scale-95 duration-100 uppercase tracking-widest">
             <span class="material-symbols-outlined text-sm" data-icon="play_arrow">play_arrow</span>
             Start
           </button>
-          <button
+          <button id="stop-btn"
             class="flex items-center gap-2 px-4 py-1.5 rounded border border-outline-variant text-zinc-400 font-bold text-xs active:scale-95 duration-100 uppercase tracking-widest hover:bg-error/10 hover:text-error hover:border-error">
             <span class="material-symbols-outlined text-sm" data-icon="stop">stop</span>
             Stop
@@ -172,7 +172,7 @@
       </div>
     </header>
     <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col min-h-0 bg-background p-6 overflow-hidden">
+    <main class="flex-1 flex flex-col min-h-0 bg-background p-6 overflow-hidden" style="height: calc(100vh - 4rem);">
       <!-- Controls Bar (Bento-lite) -->
       <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 shrink-0">
         <div class="col-span-1 bg-surface-container border border-outline-variant rounded-xl p-4 flex flex-col gap-3">
@@ -181,9 +181,9 @@
               (sec)</label>
             <span class="material-symbols-outlined text-primary text-sm" data-icon="speed">speed</span>
           </div>
-          <input
+          <input id="time-interval"
             class="bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-xl font-bold text-primary focus:ring-2 focus:ring-primary focus:outline-none"
-            step="0.1" type="number" value="1.5" />
+            step="0.1" type="number" value="1.5" placeholder="5" />
         </div>
         <div class="col-span-1 bg-surface-container border border-outline-variant rounded-xl p-4 flex flex-col gap-3">
           <div class="flex items-center justify-between">
@@ -191,16 +191,16 @@
               Transactions</label>
             <span class="material-symbols-outlined text-primary text-sm" data-icon="data_usage">data_usage</span>
           </div>
-          <input
+          <input id="num-transactions"
             class="bg-surface-container-low border border-outline-variant rounded-lg px-4 py-2 text-xl font-bold text-primary focus:ring-2 focus:ring-primary focus:outline-none"
-            type="number" value="500" />
+            type="number" value="20" placeholder="20" />
         </div>
         <div class="col-span-1 bg-surface-container border border-outline-variant rounded-xl p-4 flex flex-col gap-2">
           <div class="flex items-center justify-between mb-1">
             <span class="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">System Status</span>
             <div class="flex items-center gap-1.5">
-              <div class="w-2 h-2 rounded-full bg-tertiary"></div>
-              <span class="text-[10px] text-tertiary font-bold uppercase">Healthy</span>
+              <div id="status-indicator" class="w-2 h-2 rounded-full bg-tertiary"></div>
+              <span id="status-text" class="text-[10px] text-tertiary font-bold uppercase">Healthy</span>
             </div>
           </div>
           <div class="flex justify-between items-end">
@@ -228,210 +228,130 @@
           </h2>
           <div class="flex items-center gap-2 text-[10px] text-on-surface-variant font-medium">
             <span class="flex items-center gap-1">
-              <div class="w-2 h-2 rounded-full bg-tertiary"></div>Low Risk
-            </span>
-            <span class="flex items-center gap-1">
-              <div class="w-2 h-2 rounded-full bg-amber-400"></div>Medium Risk
-            </span>
-            <span class="flex items-center gap-1">
-              <div class="w-2 h-2 rounded-full bg-error"></div>High Risk
+              <div class="w-2 h-2 rounded-full bg-tertiary"></div>Live monitoring
             </span>
           </div>
         </div>
-        <div class="flex-1 overflow-y-auto pr-2 space-y-3 hide-scrollbar">
-          <!-- High Risk Card (Red) -->
-          <div
-            class="group bg-surface-container border border-outline-variant hover:border-error/50 transition-all rounded-xl p-5 flex flex-col md:flex-row gap-6 relative overflow-hidden">
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div>
-            <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div class="space-y-1">
-                <span class="px-2 py-0.5 rounded text-[10px] font-black bg-error-container text-error uppercase">CASH
-                  OUT</span>
-                <h3 class="text-2xl font-black text-on-surface mt-2 tracking-tight">INR 82,450.00</h3>
-                <p class="text-[10px] font-mono text-on-surface-variant">TXID: OBS-7729-XM4</p>
-              </div>
-              <div class="flex flex-col justify-center space-y-1">
-                <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-xs text-on-surface-variant"
-                    data-icon="account_balance">account_balance</span>
-                  <p class="text-xs text-on-surface">Standard Chartered Bank</p>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-xs text-on-surface-variant"
-                    data-icon="arrow_forward">arrow_forward</span>
-                  <p class="text-xs text-on-surface">Unknown Recipient (International)</p>
-                </div>
-              </div>
-              <div class="flex flex-col justify-center space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-black text-on-surface-variant uppercase">Risk Score</span>
-                  <span class="text-sm font-black text-error">94/100</span>
-                </div>
-                <div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
-                  <div class="bg-error h-full" style="width: 94%"></div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span
-                    class="px-1.5 py-0.5 rounded-[4px] text-[8px] font-bold bg-error text-on-error uppercase">Blocked</span>
-                  <span class="text-[10px] text-on-surface-variant">Multiple login attempts from different IPs</span>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <button
-                class="w-full md:w-auto px-6 py-2.5 rounded-lg border border-outline-variant text-xs font-bold hover:bg-zinc-800 transition-colors flex items-center justify-center gap-2">
-                See steps
-                <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
-              </button>
-            </div>
-          </div>
-          <!-- Low Risk Card (Green) -->
-          <div
-            class="group bg-surface-container border border-outline-variant hover:border-tertiary/50 transition-all rounded-xl p-5 flex flex-col md:flex-row gap-6 relative overflow-hidden">
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary"></div>
-            <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div class="space-y-1">
-                <span
-                  class="px-2 py-0.5 rounded text-[10px] font-black bg-tertiary-container text-tertiary uppercase">PAYMENT</span>
-                <h3 class="text-2xl font-black text-on-surface mt-2 tracking-tight">INR 5,340.00</h3>
-                <p class="text-[10px] font-mono text-on-surface-variant">TXID: OBS-1244-KK1</p>
-              </div>
-              <div class="flex flex-col justify-center space-y-1">
-                <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-xs text-on-surface-variant"
-                    data-icon="account_balance">account_balance</span>
-                  <p class="text-xs text-on-surface">HDFC Bank</p>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-xs text-on-surface-variant"
-                    data-icon="arrow_forward">arrow_forward</span>
-                  <p class="text-xs text-on-surface">Amazon India Pvt Ltd</p>
-                </div>
-              </div>
-              <div class="flex flex-col justify-center space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-black text-on-surface-variant uppercase">Risk Score</span>
-                  <span class="text-sm font-black text-tertiary">12/100</span>
-                </div>
-                <div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
-                  <div class="bg-tertiary h-full" style="width: 12%"></div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span
-                    class="px-1.5 py-0.5 rounded-[4px] text-[8px] font-bold bg-tertiary text-on-tertiary uppercase">Approved</span>
-                  <span class="text-[10px] text-on-surface-variant">Verified merchant &amp; User device</span>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <button
-                class="w-full md:w-auto px-6 py-2.5 rounded-lg border border-outline-variant text-xs font-bold hover:bg-zinc-800 transition-colors flex items-center justify-center gap-2">
-                See steps
-                <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
-              </button>
-            </div>
-          </div>
-          <!-- Medium Risk Card (Yellow) -->
-          <div
-            class="group bg-surface-container border border-outline-variant hover:border-amber-400/50 transition-all rounded-xl p-5 flex flex-col md:flex-row gap-6 relative overflow-hidden">
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-amber-400"></div>
-            <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div class="space-y-1">
-                <span
-                  class="px-2 py-0.5 rounded text-[10px] font-black bg-amber-400/20 text-amber-400 uppercase">DEBIT</span>
-                <h3 class="text-2xl font-black text-on-surface mt-2 tracking-tight">INR 12,900.00</h3>
-                <p class="text-[10px] font-mono text-on-surface-variant">TXID: OBS-8821-PP0</p>
-              </div>
-              <div class="flex flex-col justify-center space-y-1">
-                <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-xs text-on-surface-variant"
-                    data-icon="account_balance">account_balance</span>
-                  <p class="text-xs text-on-surface">ICICI Bank</p>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-xs text-on-surface-variant"
-                    data-icon="arrow_forward">arrow_forward</span>
-                  <p class="text-xs text-on-surface">Aditya Sharma (P2P)</p>
-                </div>
-              </div>
-              <div class="flex flex-col justify-center space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-black text-on-surface-variant uppercase">Risk Score</span>
-                  <span class="text-sm font-black text-amber-400">45/100</span>
-                </div>
-                <div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
-                  <div class="bg-amber-400 h-full" style="width: 45%"></div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span
-                    class="px-1.5 py-0.5 rounded-[4px] text-[8px] font-bold bg-amber-400 text-on-secondary-fixed uppercase">Flagged</span>
-                  <span class="text-[10px] text-on-surface-variant">Atypical amount for this user</span>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <button
-                class="w-full md:w-auto px-6 py-2.5 rounded-lg border border-outline-variant text-xs font-bold hover:bg-zinc-800 transition-colors flex items-center justify-center gap-2">
-                See steps
-                <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
-              </button>
-            </div>
-          </div>
-          <!-- Low Risk Card (Green) 2 -->
-          <div
-            class="group bg-surface-container border border-outline-variant hover:border-tertiary/50 transition-all rounded-xl p-5 flex flex-col md:flex-row gap-6 relative overflow-hidden">
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary"></div>
-            <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div class="space-y-1">
-                <span
-                  class="px-2 py-0.5 rounded text-[10px] font-black bg-tertiary-container text-tertiary uppercase">PAYMENT</span>
-                <h3 class="text-2xl font-black text-on-surface mt-2 tracking-tight">INR 990.00</h3>
-                <p class="text-[10px] font-mono text-on-surface-variant">TXID: OBS-5532-LL2</p>
-              </div>
-              <div class="flex flex-col justify-center space-y-1">
-                <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-xs text-on-surface-variant"
-                    data-icon="account_balance">account_balance</span>
-                  <p class="text-xs text-on-surface">Axis Bank</p>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span class="material-symbols-outlined text-xs text-on-surface-variant"
-                    data-icon="arrow_forward">arrow_forward</span>
-                  <p class="text-xs text-on-surface">Netflix India</p>
-                </div>
-              </div>
-              <div class="flex flex-col justify-center space-y-2">
-                <div class="flex items-center justify-between">
-                  <span class="text-[10px] font-black text-on-surface-variant uppercase">Risk Score</span>
-                  <span class="text-sm font-black text-tertiary">02/100</span>
-                </div>
-                <div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
-                  <div class="bg-tertiary h-full" style="width: 2%"></div>
-                </div>
-                <div class="flex items-center gap-2">
-                  <span
-                    class="px-1.5 py-0.5 rounded-[4px] text-[8px] font-bold bg-tertiary text-on-tertiary uppercase">Approved</span>
-                  <span class="text-[10px] text-on-surface-variant">Recurring subscription</span>
-                </div>
-              </div>
-            </div>
-            <div class="flex items-center">
-              <button
-                class="w-full md:w-auto px-6 py-2.5 rounded-lg border border-outline-variant text-xs font-bold hover:bg-zinc-800 transition-colors flex items-center justify-center gap-2">
-                See steps
-                <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
-              </button>
-            </div>
-          </div>
+        <div id="transaction-stream" class="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+          <!-- Cards will be injected here -->
         </div>
       </div>
     </main>
   </div>
-  <!-- Floating Action Button (Optional, following rules for context) -->
-  <button
-    class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-on-primary rounded-full shadow-2xl flex items-center justify-center active:scale-95 transition-transform">
-    <span class="material-symbols-outlined" data-icon="bolt">bolt</span>
-  </button>
+
+  <script>
+    let simulationInterval = null;
+    let transactionsGenerated = 0;
+
+    const startBtn = document.getElementById('start-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const stream = document.getElementById('transaction-stream');
+    const timeInput = document.getElementById('time-interval');
+    const countInput = document.getElementById('num-transactions');
+
+    async function fetchTransaction() {
+      try {
+        const response = await fetch('/generate_transaction', { method: 'POST' });
+        const data = await response.json();
+
+        if (data.error) {
+          console.error('Error generating data:', data.error);
+          return;
+        }
+
+        appendCard(data);
+        transactionsGenerated++;
+
+        if (transactionsGenerated >= parseInt(countInput.value)) {
+          stopSimulation();
+        }
+      } catch (err) {
+        console.error('Fetch error:', err);
+      }
+    }
+
+    function appendCard(tx) {
+      const card = document.createElement('div');
+      card.className = "group bg-surface-container border border-outline-variant hover:border-primary/50 transition-all rounded-xl p-5 flex flex-col md:flex-row gap-6 relative overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500";
+
+      card.innerHTML = `
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-1">
+            <span class="px-2 py-0.5 rounded text-[10px] font-black bg-primary/20 text-primary uppercase">${tx.type}</span>
+            <h3 class="text-2xl font-black text-on-surface mt-2 tracking-tight">INR ${tx.amount.toLocaleString()}</h3>
+            <p class="text-[10px] font-mono text-on-surface-variant">TXID: ${tx.transaction_id}</p>
+            <p class="text-[10px] text-on-surface-variant italic">${tx.date_time}</p>
+          </div>
+          <div class="flex flex-col justify-center space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-xs text-on-surface-variant"
+                data-icon="account_balance">account_balance</span>
+              <p class="text-xs text-on-surface">${tx.sender_bank} Bank</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-xs text-on-surface-variant"
+                data-icon="arrow_forward">arrow_forward</span>
+              <p class="text-xs text-on-surface">${tx.reciever_bank} Bank</p>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center">
+          <button class="w-full md:w-auto px-6 py-2.5 rounded-lg border border-outline-variant text-xs font-bold hover:bg-zinc-800 transition-colors flex items-center justify-center gap-2">
+            See Details
+            <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+          </button>
+        </div>
+      `;
+
+      // Prepend to show new transactions at the top, or append if desired. 
+      // User said "one by one below each card similar to the queue", usually implies appending.
+      stream.appendChild(card);
+
+      // Auto-scroll to bottom with requestAnimationFrame to ensure DOM is updated
+      requestAnimationFrame(() => {
+        stream.scrollTo({
+          top: stream.scrollHeight,
+          behavior: 'smooth'
+        });
+      });
+    }
+
+    function startSimulation() {
+      if (simulationInterval) return;
+
+      transactionsGenerated = 0;
+      stream.innerHTML = '';
+
+      const intervalMs = parseFloat(timeInput.value) * 1000;
+
+      startBtn.disabled = true;
+      startBtn.classList.add('opacity-50');
+
+      fetchTransaction(); // Start first one immediately
+      simulationInterval = setInterval(fetchTransaction, intervalMs);
+
+      document.getElementById('status-indicator').className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
+      document.getElementById('status-text').textContent = 'Monitoring...';
+      document.getElementById('status-text').className = 'text-[10px] text-amber-400 font-bold uppercase';
+    }
+
+    function stopSimulation() {
+      if (simulationInterval) {
+        clearInterval(simulationInterval);
+        simulationInterval = null;
+      }
+      startBtn.disabled = false;
+      startBtn.classList.remove('opacity-50');
+
+      document.getElementById('status-indicator').className = 'w-2 h-2 rounded-full bg-tertiary';
+      document.getElementById('status-text').textContent = 'Healthy';
+      document.getElementById('status-text').className = 'text-[10px] text-tertiary font-bold uppercase';
+    }
+
+    startBtn.addEventListener('click', startSimulation);
+    stopBtn.addEventListener('click', stopSimulation);
+  </script>
 </body>
 
 </html>
