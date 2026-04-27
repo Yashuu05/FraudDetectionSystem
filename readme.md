@@ -51,6 +51,7 @@ source : https://www.kaggle.com/datasets/sriharshaeedala/financial-fraud-detecti
 | Seaborn and matplotlib | Vsiualization         |
 | Pandas                 |  data cleaning        |
 | XGBoost                |  XGboost model        |
+| MlFlow                 |  Model tracking       |
 -------------------------------------------------
 
 ```
