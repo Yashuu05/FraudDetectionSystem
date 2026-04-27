@@ -41,3 +41,8 @@ htmlcov/
 Dockerfile
 docker-compose.yml
 .dockerignore
+
+.env
+*.pyc
+__pycache__
+redis-data

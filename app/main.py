@@ -1,12 +1,19 @@
 import os
 import sys
+from dotenv import load_dotenv
+
+load_dotenv()
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import redis
 from flask import Flask, render_template, request, jsonify
 from app.system_1.script import generate_data
-import time
 
 app = Flask(__name__)
+cache = redis.Redis(
+    host=os.getenv("REDIS_HOST", "redis"),
+    port=int(os.getenv("REDIS_PORT", "6379")),
+)
 
 @app.route("/")
 def index():

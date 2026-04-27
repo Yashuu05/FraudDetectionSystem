@@ -5,3 +5,5 @@ mlflow
 xgboost
 flask
 joblib
+redis
+python-dotenv
