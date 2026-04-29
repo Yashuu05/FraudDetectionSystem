@@ -1,7 +1,7 @@
 from xgboost import XGBClassifier
-from src.piplelines.xgb_pipeline import build_xgb_model
-from src.piplelines.model_pipeline import build_pipeline
+from src.pipelines.model_pipeline import build_pipeline
 from sklearn.pipeline import Pipeline
+from sklearn.decomposition import PCA
 
 
 def build_xgb_pipeline(cat_cols, num_cols):
@@ -15,6 +15,7 @@ def build_xgb_pipeline(cat_cols, num_cols):
         xgb_pipeline = Pipeline(
             steps=[
                 ("preprocessor", pipeline),
+                ("pca", PCA(n_components=13))
                 ("model", model)
             ])
 

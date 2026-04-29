@@ -1,7 +1,7 @@
 from sklearn.model_selection import GridSearchCV
 import json
 import os
-from src.piplelines.xgb_pipeline import build_xgb_pipeline
+from pipelines.xgb_pipeline import build_xgb_pipeline
 
 
 def build_full_pipeline(cat_cols, num_cols):

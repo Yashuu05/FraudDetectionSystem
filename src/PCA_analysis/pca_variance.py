@@ -6,12 +6,13 @@ import pandas as pd
 from sklearn.decomposition import PCA
 
 # Add project root to path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, root)
 
 from src.utils import data_utils
 from src.pipelines import model_pipeline
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = root
 
 def analyze_pca_variance(data):
     # Separate data into X and y

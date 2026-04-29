@@ -1,7 +1,9 @@
 # performing PCA on the processed dataset
 import os
 import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add project root to path
+root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, root)
 from src.utils import data_utils
 from src.pipelines import model_pipeline
 from sklearn.decomposition import PCA
@@ -9,7 +11,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # Project root = parent of src/
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = root
 
 def perform_pca(data):
     
@@ -33,7 +35,7 @@ def perform_pca(data):
     preprocessor = model_pipeline.build_pipeline(cat_cols=cat_cols, num_cols=num_cols)
     X_preprocessed = preprocessor.fit_transform(X)
     # perform PCA
-    pca = PCA(n_components=6)
+    pca = PCA(n_components=13)
     X_pca = pca.fit_transform(X_preprocessed)
 
     return X_pca, X_preprocessed, y
@@ -74,7 +76,7 @@ if __name__ == "__main__":
         # save plot
         assets_dir = os.path.join(PROJECT_ROOT, "assets")
         os.makedirs(assets_dir, exist_ok=True)
-        plt.savefig(os.path.join(assets_dir, "pca.png"))
+        plt.savefig(os.path.join(assets_dir, "pca_new.png"))
     
     else:
         raise FileNotFoundError(f"Dataset not found at: {dataset_path}")
