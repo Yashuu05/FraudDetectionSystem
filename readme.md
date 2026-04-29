@@ -50,6 +50,7 @@ source : https://www.kaggle.com/datasets/sriharshaeedala/financial-fraud-detecti
 | joblib                 | Save model weights    |
 | Seaborn and matplotlib | Vsiualization         |
 | Pandas                 |  data cleaning        |
+| Numpy                  | system1 data genrate |
 | XGBoost                |  XGboost model        |
 | MlFlow                 |  Model tracking       |
 | Scikit-learn           | Machine learning      |

@@ -8,6 +8,9 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import pandas as pd
 
+# Project root = parent of src/
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 def perform_pca(data):
     
     # list of features
@@ -38,8 +41,15 @@ def perform_pca(data):
 
 if __name__ == "__main__":
     
-    # load dataset
-    dataset = data_utils.load_dataset(file_path="Data/processed/featured_data.csv")
+    # load a sample from the large dataset (full file is ~1.1 GB)
+    dataset_path = os.path.join(PROJECT_ROOT, "Data", "processed", "featured_data.csv")
+    print("Loading dataset sample (this may take a minute while streaming the file)...")
+    dataset = data_utils.load_dataset_sample(
+        file_path=dataset_path,
+        sample_size=100_000,   # adjust upward if memory allows
+        random_state=42,
+        chunksize=50_000,
+    )
     
     # perform PCA
     if dataset is not None:
@@ -61,8 +71,10 @@ if __name__ == "__main__":
         plt.ylabel('Principal Component 2')
         plt.title('After PCA')
 
-        # save plot 
-        plt.savefig("assets/pca.png")
+        # save plot
+        assets_dir = os.path.join(PROJECT_ROOT, "assets")
+        os.makedirs(assets_dir, exist_ok=True)
+        plt.savefig(os.path.join(assets_dir, "pca.png"))
     
-    else: 
-        raise FileNotFoundError
+    else:
+        raise FileNotFoundError(f"Dataset not found at: {dataset_path}")

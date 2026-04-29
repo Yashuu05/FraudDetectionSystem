@@ -12,8 +12,8 @@ def build_pipeline(cat_cols, num_cols):
     ])
 
     num_preprocessor = Pipeline(steps=[
-        ("scale", StandardScaler()),
-        ("impute", SimpleImputer(strategy="mean"))
+        ("impute", SimpleImputer(strategy="mean")),
+        ("scale", StandardScaler())
     ])
 
     pipeline = ColumnTransformer(transformers=[
