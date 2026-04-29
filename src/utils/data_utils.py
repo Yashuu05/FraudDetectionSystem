@@ -67,3 +67,15 @@ def split_dataset(randomState, testSize, X, y):
 
     except Exception as e:
         print(f"Error! {str(e)}")
+
+# find categorical and numerical values
+def separate_cols_type(data):
+    categorical_cols = []
+    numerical_cols = []
+    
+    for cols in data.columns:
+        if data[cols].dtypes == "object":
+            categorical_cols.append(cols)
+        else:
+            numerical_cols.append(cols)
+    return categorical_cols, numerical_cols
