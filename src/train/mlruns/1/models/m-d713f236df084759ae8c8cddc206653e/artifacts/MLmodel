@@ -1,0 +1,46 @@
+artifact_path: file:///D:/projects/FraudDetectionSystem/src/train/mlruns/1/models/m-d713f236df084759ae8c8cddc206653e/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.10.0
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.2
+    skops_trusted_types: null
+is_signature_from_type_hint: false
+mlflow_version: 3.11.1
+model_id: m-d713f236df084759ae8c8cddc206653e
+model_size_bytes: 705018
+model_uuid: m-d713f236df084759ae8c8cddc206653e
+prompts: null
+run_id: 4b53e3b950ef4996a12efed781d06803
+signature:
+  inputs: '[{"type": "long", "name": "step", "required": true}, {"type": "string",
+    "name": "type", "required": true}, {"type": "double", "name": "amount", "required":
+    true}, {"type": "double", "name": "oldbalanceOrg", "required": true}, {"type":
+    "double", "name": "newbalanceOrig", "required": true}, {"type": "double", "name":
+    "oldbalanceDest", "required": true}, {"type": "double", "name": "newbalanceDest",
+    "required": true}, {"type": "long", "name": "high_risk_type", "required": true},
+    {"type": "double", "name": "sender_balance_error", "required": true}, {"type":
+    "double", "name": "receiver_balance_error", "required": true}, {"type": "long",
+    "name": "balance_error_flag", "required": true}, {"type": "long", "name": "missing_sender_balance",
+    "required": true}, {"type": "long", "name": "missing_receiver_balance", "required":
+    true}, {"type": "long", "name": "dest_balance_unchanged", "required": true}, {"type":
+    "long", "name": "sender_balance_unchanged", "required": true}, {"type": "long",
+    "name": "large_transaction", "required": true}, {"type": "double", "name": "amount_to_balance_ratio",
+    "required": true}, {"type": "double", "name": "amount_to_dest_ratio", "required":
+    true}, {"type": "long", "name": "transactions_per_step", "required": true}, {"type":
+    "double", "name": "avg_amount_per_step", "required": true}, {"type": "long", "name":
+    "high_risk_combination", "required": true}, {"type": "long", "name": "zero_balance_transfer",
+    "required": true}]'
+  outputs: '[{"type": "tensor", "tensor-spec": {"dtype": "int64", "shape": [-1]}}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-04-29 14:36:57.861012'

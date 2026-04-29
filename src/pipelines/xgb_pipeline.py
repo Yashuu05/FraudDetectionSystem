@@ -15,7 +15,7 @@ def build_xgb_pipeline(cat_cols, num_cols):
         xgb_pipeline = Pipeline(
             steps=[
                 ("preprocessor", pipeline),
-                ("pca", PCA(n_components=13))
+                ("pca", PCA(n_components=13)),
                 ("model", model)
             ])
 

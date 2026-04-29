@@ -1,7 +1,7 @@
 from sklearn.model_selection import GridSearchCV
 import json
 import os
-from pipelines.xgb_pipeline import build_xgb_pipeline
+from src.pipelines.xgb_pipeline import build_xgb_pipeline
 
 
 def build_full_pipeline(cat_cols, num_cols):
@@ -12,7 +12,7 @@ def build_full_pipeline(cat_cols, num_cols):
         # Get the directory of the current script
         script_dir = os.path.dirname(os.path.abspath(__file__))
         # Construct the path to the JSON file
-        file_path = os.path.join(script_dir, 'src', 'hyperparameters.json')
+        file_path = os.path.join(os.path.dirname(script_dir), 'hyperparameters.json')
 
         # Open and load the JSON file
         with open(file_path, 'r', encoding='utf-8') as file:
