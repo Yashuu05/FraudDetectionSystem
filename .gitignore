@@ -158,6 +158,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+mlruns/
+src/train/mlruns/
 
 # Spyder project settings
 .spyderproject

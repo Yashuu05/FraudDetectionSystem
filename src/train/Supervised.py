@@ -15,7 +15,10 @@ mlflow.set_experiment("fraud detection")
 mlflow.autolog()
 
 # step 1 load dataset
+MODEL_TO_TRAIN = "xgb"  # Options: "xgb", "isoforest"
+
 print("========== Initialized training =========== ")
+print(f"\nModel selected: {MODEL_TO_TRAIN}")
 print("\n1. loading dataset...")
 data_path = os.path.join(PROJECT_ROOT, "Data", "processed", "featured_data.csv")
 dataset = data_utils.load_dataset_sample(
@@ -45,19 +48,34 @@ else:
 
         print("\n3. loading model pipeline...")
         categorical_cols, numerical_cols = data_utils.separate_cols_type(data=X)
-        model_pipeline = full_pipeline.build_full_pipeline(cat_cols=categorical_cols, num_cols=numerical_cols)
+        grid_search = full_pipeline.build_full_pipeline(
+            cat_cols=categorical_cols, 
+            num_cols=numerical_cols,
+            model_name=MODEL_TO_TRAIN
+        )
 
-        print("\n4. fitting model")
-        model_pipeline.fit(X_train, y_train)
-        y_pred = model_pipeline.predict(X_test)
+        print(f"\n4. fitting model ({MODEL_TO_TRAIN})...")
+        grid_search.fit(X_train, y_train)
+        
+        print(f"\nBest parameters: {grid_search.best_params_}")
+        best_model = grid_search.best_estimator_
+        
+        y_pred = best_model.predict(X_test)
 
         print ("\n5. Evaluating model...")
-        metrics = ["recall", "precision", "f1", "acc", "roc", "report"]
+        metrics_names = ["Recall", "Precision", "F1 Score", "Accuracy", "ROC AUC"]
         results = model_utils.evalulate_model(y_test=y_test, y_pred=y_pred)
-        for i,j in zip(metrics, results):
-                print(f"{i} : {j} \n")
+        
+        # results is [recall, precision, f1, acc, roc, report]
+        for i, (name, val) in enumerate(zip(metrics_names, results[:5])):
+            print(f"{name} : {val:.4f}")
+        
+        print("\nClassification Report:")
+        print(results[5])
 
         print("============ training finished ============")
 
     except Exception as e:
-            print(f"Error! {str(e)}")
+        import traceback
+        print(f"Error during training: {str(e)}")
+        traceback.print_exc()
