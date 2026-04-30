@@ -8,11 +8,11 @@ sys.path.insert(0, root)
 from src.utils import data_utils
 from src.utils import model_utils
 from src.pipelines import full_pipeline
-import mlflow
+#import mlflow
 
 PROJECT_ROOT = root
-mlflow.set_experiment("fraud detection")
-mlflow.autolog()
+#mlflow.set_experiment("fraud detection")
+#mlflow.autolog()
 
 # step 1 load dataset
 MODEL_TO_TRAIN = "xgb"  # Options: "xgb", "isoforest"
@@ -72,6 +72,13 @@ else:
         
         print("\nClassification Report:")
         print(results[5])
+
+        print("\nSaving model...")
+        # Add this to the end of Supervised.py
+        model_save_path = os.path.join(PROJECT_ROOT, "models", "xgb_classifier_best.joblib")
+        os.makedirs(os.path.dirname(model_save_path), exist_ok=True)
+        model_utils.save_model(model_save_path, best_model)
+        print(f"\nModel saved manually : {model_save_path}")
 
         print("============ training finished ============")
 
