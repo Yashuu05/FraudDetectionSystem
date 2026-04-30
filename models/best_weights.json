@@ -1,0 +1,19 @@
+{
+    "best_weights": {
+        "w1_xgb": 0.56,
+        "w2_iso": 0.18,
+        "w3_rule": 0.26
+    },
+    "metrics": {
+        "recall": 0.6364,
+        "precision": 0.3684,
+        "f1_score": 0.4667,
+        "f2_score": 0.5556
+    },
+    "search_parameters": {
+        "test_size": 0.2,
+        "random_state": 42,
+        "threshold": 0.5,
+        "primary_metric": "f2_score"
+    }
+}

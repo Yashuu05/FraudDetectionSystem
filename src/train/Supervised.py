@@ -8,11 +8,11 @@ sys.path.insert(0, root)
 from src.utils import data_utils
 from src.utils import model_utils
 from src.pipelines import full_pipeline
-#import mlflow
+import mlflow
 
 PROJECT_ROOT = root
-#mlflow.set_experiment("fraud detection")
-#mlflow.autolog()
+mlflow.set_experiment("fraud detection")
+mlflow.autolog()
 
 # step 1 load dataset
 MODEL_TO_TRAIN = "xgb"  # Options: "xgb", "isoforest"

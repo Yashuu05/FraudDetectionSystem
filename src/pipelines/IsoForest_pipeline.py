@@ -30,6 +30,7 @@ class IsolationForestWrapper(BaseEstimator, ClassifierMixin):
             verbose=self.verbose
         )
         self.model.fit(X)
+        self.is_fitted_ = True
         return self
 
     def predict(self, X):
