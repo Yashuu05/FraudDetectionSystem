@@ -92,7 +92,8 @@ def generate_data():
         "sender_bank": bank,
         "reciever_bank": random.choice(bank_lst),
         "amount": round(amount, 2),
-        "date_time": date_time.strftime("%Y-%m-%d %H:%M:%S")
+        "date_time": date_time.strftime("%Y-%m-%d %H:%M:%S"),
+        "is_fraud_actual": 1 if is_fraud_case else 0
     }
 
-    return data_input, data
+    return data_input, data, is_fraud_case
