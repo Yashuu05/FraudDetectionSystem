@@ -1,0 +1,4 @@
+{
+    "model__n_estimators": [100, 300, 500],
+    "model__contamination":[0.1, 0.13]
+}
