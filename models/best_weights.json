@@ -4,11 +4,21 @@
         "w2_iso": 0.18,
         "w3_rule": 0.26
     },
-    "metrics": {
+    "ml_metrics": {
         "recall": 0.6364,
         "precision": 0.3684,
         "f1_score": 0.4667,
         "f2_score": 0.5556
+    },
+    "business_impact": {
+        "total_fraud_value_at_risk": 7543462.66,
+        "total_fraud_value_blocked": 3489568.25,
+        "total_fraud_value_missed": 4053894.41,
+        "percentage_value_saved": 46.26,
+        "customer_friction_value": 5846440.11,
+        "false_positive_count": 24,
+        "true_positive_count": 14,
+        "block_to_catch_ratio": 1.71
     },
     "search_parameters": {
         "test_size": 0.2,

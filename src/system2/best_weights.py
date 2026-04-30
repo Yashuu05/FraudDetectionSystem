@@ -140,11 +140,58 @@ if __name__ == "__main__":
     print(f"Weights: {best_weights}")
     print(f"Metrics: {best_metrics}")
 
-    # 5. Save best weights
-    print("\n6. Saving best weights to file...")
+    # 5. NEW: Generate Business Impact Report
+    print("\n7. Generating Business Impact Report...")
+    
+    # Use best weights to get final predictions for the report
+    final_score_best = (best_weights["w1_xgb"] * xgb_scores) + \
+                      (best_weights["w2_iso"] * iso_scores) + \
+                      (best_weights["w3_rule"] * rule_scores)
+    y_pred_best = (final_score_best > 0.5).astype(int)
+    
+    # Align amounts with predictions
+    test_amounts = X_test['amount'].values
+    
+    # Financial Calculations
+    total_fraud_amt = np.sum(test_amounts[y_test == 1])
+    caught_fraud_amt = np.sum(test_amounts[(y_test == 1) & (y_pred_best == 1)])
+    missed_fraud_amt = total_fraud_amt - caught_fraud_amt
+    
+    flagged_legit_amt = np.sum(test_amounts[(y_test == 0) & (y_pred_best == 1)])
+    
+    fp_count = np.sum((y_test == 0) & (y_pred_best == 1))
+    tp_count = np.sum((y_test == 1) & (y_pred_best == 1))
+    
+    # Ratio of false blocks to 1 fraud catch
+    fp_ratio = fp_count / tp_count if tp_count > 0 else float('inf')
+    
+    business_metrics = {
+        "total_fraud_value_at_risk": round(float(total_fraud_amt), 2),
+        "total_fraud_value_blocked": round(float(caught_fraud_amt), 2),
+        "total_fraud_value_missed": round(float(missed_fraud_amt), 2),
+        "percentage_value_saved": round(float(caught_fraud_amt / total_fraud_amt * 100), 2) if total_fraud_amt > 0 else 0,
+        "customer_friction_value": round(float(flagged_legit_amt), 2),
+        "false_positive_count": int(fp_count),
+        "true_positive_count": int(tp_count),
+        "block_to_catch_ratio": round(float(fp_ratio), 2)
+    }
+
+    print("-" * 40)
+    print("BUSINESS IMPACT SUMMARY")
+    print("-" * 40)
+    print(f"Total Fraud Value in Test Set : ${business_metrics['total_fraud_value_at_risk']:,.2f}")
+    print(f"Total Value Successfully Saved: ${business_metrics['total_fraud_value_blocked']:,.2f} ({business_metrics['percentage_value_saved']}%)")
+    print(f"Total Value Missed (Loss)     : ${business_metrics['total_fraud_value_missed']:,.2f}")
+    print(f"Value of Legit Funds Flagged  : ${business_metrics['customer_friction_value']:,.2f}")
+    print(f"Block-to-Catch Ratio          : {business_metrics['block_to_catch_ratio']} legit blocks per 1 fraud catch")
+    print("-" * 40)
+
+    # 6. Save best weights and business metrics
+    print("\n8. Saving results to file...")
     save_data = {
         "best_weights": best_weights,
-        "metrics": best_metrics,
+        "ml_metrics": best_metrics,
+        "business_impact": business_metrics,
         "search_parameters": {
             "test_size": 0.20,
             "random_state": 42,
