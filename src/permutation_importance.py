@@ -1,67 +1,143 @@
-from sklearn.inspection import permutation_importance
-import mlflow
-from sklearn.ensemble import RandomForestClassifier
-from src.pipelines import model_pipeline
-from src.utils import data_utils
-from sklearn.pipeline import Pipeline
 import os
-import matplotlib.pyplot as plt
+import sys
 import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.inspection import permutation_importance
 
-mlflow.set_experiment("fraud detection permuatation importance")
-mlflow.autolog()
+# Add project root to path to ensure imports work correctly
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, PROJECT_ROOT)
 
-def perform_permuatation_importance(X_train, y_train):
-    num_cols, cat_cols = data_utils.separate_cols_type(data=X_train)
+from src.utils import data_utils
+from src.utils.model_utils import load_model
+
+def perform_permutation_importance(X_test, y_test, model, n_repeats=5):
+    """
+    Computes permutation importance for a given model and test set.
     
-    # build model
-    model = RandomForestClassifier(n_jobs=-1, verbose=2, n_estimators=200, criterion='gini')
-    preprocessor = model_pipeline.build_pipeline(cat_cols=cat_cols, num_cols=num_cols)
-    rf_pipeline = Pipeline(steps=[
-        ("preprocessor", preprocessor),
-        ('model', model)
-    ])
-    print("\nfitting model...")
-    with mlflow.start_run():
-        rf_pipeline.fit(X_train, y_train)
+    Args:
+        X_test: Test features
+        y_test: Test target
+        model: Trained estimator or pipeline
+        n_repeats: Number of times to permute each feature
+        
+    Returns:
+        DataFrame containing importance mean and std for each feature.
+    """
+    print(f"Calculating permutation importance with {n_repeats} repeats...")
+    # Permutation importance can be slow for large datasets, so we use a reasonable n_repeats
+    result = permutation_importance(
+        estimator=model,
+        X=X_test,
+        y=y_test,
+        n_repeats=n_repeats,
+        random_state=42,
+        n_jobs=-1,
+        scoring='recall' # Using recall as it's critical for fraud detection
+    )
+    
+    # Create a DataFrame for better visualization and saving
+    importance_df = pd.DataFrame({
+        'feature': X_test.columns,
+        'importance_mean': result.importances_mean,
+        'importance_std': result.importances_std
+    }).sort_values(by='importance_mean', ascending=False)
+    
+    return importance_df
 
-    # Perform permutation importance
-    print("\nimplementing Permutation Importance")
-    # Get importance
-    importance = rf_pipeline.feature_importances_
-    # Summarize feature importance
-    for i, v in enumerate(importance):
-        print(f'Feature: {i}, Score: {v:.5f}')
-        # save into the dictionary
-        permutation_imp = {f"feature: {i}, Score: {v:.5f}"}
+def save_importance_plot(importance_df, output_path):
+    """
+    Plots the feature importance and saves it to a file.
+    
+    Args:
+        importance_df: DataFrame with importance scores
+        output_path: Path to save the plot image
+    """
+    plt.figure(figsize=(12, 10))
+    # Select top 25 features for better readability if there are many
+    top_n = 25
+    plot_df = importance_df.head(top_n)
+    
+    # Using horizontal bar chart
+    bars = plt.barh(plot_df['feature'], plot_df['importance_mean'], 
+                    xerr=plot_df['importance_std'], align='center', 
+                    color='skyblue', edgecolor='navy', alpha=0.8)
+    
+    plt.xlabel('Permutation Importance (Mean decrease in Recall)')
+    plt.ylabel('Features')
+    plt.title(f'Top {len(plot_df)} Features via Permutation Importance\n(Model: XGBoost Fraud Classifier)')
+    plt.gca().invert_yaxis()
+    plt.grid(axis='x', linestyle='--', alpha=0.7)
+    
+    # Add values on bars
+    for bar in bars:
+        width = bar.get_width()
+        plt.text(width + 0.001, bar.get_y() + bar.get_height()/2, 
+                 f'{width:.4f}', va='center', fontsize=9)
 
-    # Plot feature importance
-    plt.bar([x for x in range(len(importance))], importance)
-    assets_dir = os.path.join(PROJECT_ROOT, "assets")
-    os.makedirs(assets_dir, exist_ok=True)
-    plt.savefig(os.path.join(assets_dir, "permuration_imp.png"))
-
-    return pd.DataFrame(permutation_imp)
-
+    plt.tight_layout()
+    
+    # Ensure directory exists
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    plt.savefig(output_path, dpi=300)
+    print(f"Importance plot saved to: {output_path}")
+    plt.close()
 
 if __name__ == "__main__":
-
-    # load dataset
+    # Define paths
     dataset_path = os.path.join(PROJECT_ROOT, "Data", "processed", "featured_data.csv")
-    print("Loading dataset sample (this may take a minute while streaming the file)...")
+    model_path = os.path.join(PROJECT_ROOT, "models", "xgb_classifier_best.joblib")
+    results_csv_path = os.path.join(PROJECT_ROOT, "models", "permutation_importance_scores.csv")
+    results_plot_path = os.path.join(PROJECT_ROOT, "assets", "permutation_importance.png")
+
+    print("--- Permutation Importance Analysis ---")
+
+    # 1. Load dataset sample
+    print("\nStep 1: Loading dataset sample...")
+    # Using a sample size that is representative but manageable for permutation importance
     dataset = data_utils.load_dataset_sample(
         file_path=dataset_path,
-        sample_size=100_000,   # adjust upward if memory allows
+        sample_size=30_000, 
         random_state=42,
-        chunksize=50_000,
+        chunksize=50_000
     )
 
     if dataset is None:
-        raise FileNotFoundError(f"Dataset not found at: {dataset_path}")
-    else:
-        print("\ndataset loaded succesfully.")
-        df = dataset.copy()
-        X = df.drop(["nameOrig","nameDest","isFraud","isFlaggedFraud"], axis=1)
-        y = df["isFraud"]
-        X_train, X_test, y_train, y_test = data_utils.split_dataset(randomState=42, testSize=0.20, X=X, y=y)
+        print(f"Error: Dataset not found at {dataset_path}")
+        sys.exit(1)
+
+    # 2. Load model
+    print("\nStep 2: Loading trained model...")
+    model = load_model(file_path=model_path)
+    if model is None:
+        print(f"Error: Model file not found at {model_path}")
+        sys.exit(1)
+
+    # 3. Data Preparation
+    print("\nStep 3: Preparing data for importance calculation...")
+    # Drop columns not used in training (consistent with src/train/Supervised.py)
+    drop_cols = ["nameOrig", "nameDest", "isFraud", "isFlaggedFraud"]
+    X = dataset.drop(columns=[col for col in drop_cols if col in dataset.columns], axis=1)
+    y = dataset["isFraud"]
+
+    # 4. Split data
+    print("\nStep 4: Splitting dataset (using test set for analysis)...")
+    _, X_test, _, y_test = data_utils.split_dataset(randomState=42, testSize=0.20, X=X, y=y)
+
+    # 5. Perform Permutation Importance
+    print("\nStep 5: Performing Permutation Importance...")
+    # n_repeats=5 is a good balance between speed and stability for initial analysis
+    importance_df = perform_permutation_importance(X_test, y_test, model, n_repeats=5)
+
+    # 6. Save results to models folder
+    print(f"\nStep 6: Saving importance scores to {results_csv_path}")
+    importance_df.to_csv(results_csv_path, index=False)
+
+    # 7. Generate and save plot to assets
+    print("\nStep 7: Generating and saving importance plot...")
+    save_importance_plot(importance_df, results_plot_path)
+
+    print("\n" + "="*40)
+    print("Permutation Importance analysis completed successfully.")
+    print("="*40)
+    print(f"Top 10 most influential features:\n{importance_df.head(10).to_string(index=False)}")
